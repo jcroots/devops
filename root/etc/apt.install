@@ -1,0 +1,9 @@
+bash
+bash-completion
+openssl
+ca-certificates
+media-types
+less
+wget
+unzip
+make

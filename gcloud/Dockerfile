@@ -20,10 +20,9 @@ RUN apt-get clean \
 		/var/cache/apt/archives/*.deb \
 		/var/cache/apt/*cache.bin
 
-ENV APT_INSTALL='bash bash-completion openssl ca-certificates media-types less'
-ENV APT_INSTALL="${APT_INSTALL} wget unzip make"
+COPY root/etc /root/etc
 
-RUN /root/bin/apt-install.sh ${APT_INSTALL}
+RUN cat /root/etc/apt.install | xargs /root/bin/apt-install.sh
 
 RUN groupadd -g 1980 devops \
 	&& useradd -d /home/devops -m -c devops -g 1980 -u 1980 devops \
