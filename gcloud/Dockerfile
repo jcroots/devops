@@ -20,7 +20,8 @@ RUN apt-get clean \
 		/var/cache/apt/archives/*.deb \
 		/var/cache/apt/*cache.bin
 
-ENV APT_INSTALL='bash bash-completion openssl ca-certificates media-types less wget unzip'
+ENV APT_INSTALL='bash bash-completion openssl ca-certificates media-types less'
+ENV APT_INSTALL="${APT_INSTALL} wget unzip make"
 
 RUN /root/bin/apt-install.sh ${APT_INSTALL}
 
