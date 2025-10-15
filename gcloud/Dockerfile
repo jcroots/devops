@@ -9,6 +9,8 @@ WORKDIR /root
 ENV USER=root
 ENV HOME=/root
 
+COPY root/bin /root/bin
+
 ENV DEBIAN_FRONTEND=noninteractive
 
 ENV APT_INSTALL='bash bash-completion openssl ca-certificates media-types less wget unzip'
@@ -30,12 +32,11 @@ RUN groupadd -g 1980 devops \
 RUN printf 'umask %s\n' '027' >>/home/devops/.profile
 RUN printf "export PS1='%s '\n" '\u@\h:\W\$' >>/home/devops/.profile
 
-ENV TF_VERSION=1.13.3
-COPY scripts/terraform-install.sh /root/
-RUN /root/terraform-install.sh
-
 RUN ln -vs /usr/lib/google-cloud-sdk/bin/gcloud /usr/local/bin/gcloud
 RUN ln -vs /usr/lib/google-cloud-sdk/bin/gsutil /usr/local/bin/gsutil
+
+ENV TF_VERSION=1.13.3
+RUN /root/bin/terraform-install.sh
 
 COPY gcloud/user-login.sh /usr/local/bin/user-login.sh
 RUN chmod -v 0755 /usr/local/bin/user-login.sh
