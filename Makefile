@@ -5,4 +5,4 @@ all:
 
 .PHONY: check
 check:
-	@shellcheck *.sh */*.sh
+	@shellcheck *.sh */*.sh */*/*.sh

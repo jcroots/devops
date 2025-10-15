@@ -13,17 +13,16 @@ COPY root/bin /root/bin
 
 ENV DEBIAN_FRONTEND=noninteractive
 
-ENV APT_INSTALL='bash bash-completion openssl ca-certificates media-types less wget unzip'
-
 RUN apt-get clean \
 	&& apt-get update -yy \
 	&& apt-get dist-upgrade -yy --purge \
-	&& apt-get install -yy --no-install-recommends ${APT_INSTALL} \
-	&& apt-get clean \
-	&& apt-get autoremove -yy --purge \
 	&& rm -rf /var/lib/apt/lists/* \
 		/var/cache/apt/archives/*.deb \
 		/var/cache/apt/*cache.bin
+
+ENV APT_INSTALL='bash bash-completion openssl ca-certificates media-types less wget unzip'
+
+RUN /root/bin/apt-install.sh ${APT_INSTALL}
 
 RUN groupadd -g 1980 devops \
 	&& useradd -d /home/devops -m -c devops -g 1980 -u 1980 devops \
