@@ -1,6 +1,7 @@
 .PHONY: all
 
 all:
+	./build.sh aws
 	./build.sh gcloud
 
 .PHONY: check
