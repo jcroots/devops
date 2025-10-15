@@ -1,6 +1,5 @@
 FROM debian:forky-20250929-slim
 
-
 LABEL maintainer="Jeremías Casteglione <jeremias.rootstrap@gmail.com>"
 LABEL version="251015"
 
@@ -20,9 +19,12 @@ RUN apt-get clean \
 		/var/cache/apt/*cache.bin
 
 COPY root/bin/apt-install.sh /root/bin/apt-install.sh
-COPY root/etc/apt.install /root/etc/apt.install
 
+COPY root/etc/apt.install /root/etc/apt.install
 RUN cat /root/etc/apt.install | xargs /root/bin/apt-install.sh
+
+COPY root/etc/aws/apt.install /root/etc/aws/apt.install
+RUN cat /root/etc/aws/apt.install | xargs /root/bin/apt-install.sh
 
 RUN groupadd -g 1980 devops \
 	&& useradd -d /home/devops -m -c devops -g 1980 -u 1980 devops \
@@ -45,7 +47,7 @@ WORKDIR /home/devops
 ENV USER=devops
 ENV HOME=/home/devops
 
-#RUN awscli version
+RUN aws --version
 RUN terraform version
 
 ENTRYPOINT ["/bin/bash", "-i", "-l"]
