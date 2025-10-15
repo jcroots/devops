@@ -1,6 +1,8 @@
 #!/bin/bash
 set -eux
 
+TF_VERSION='1.13.3'
+
 ARCH=$(dpkg --print-architecture)
 
 cd /root

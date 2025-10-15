@@ -36,7 +36,6 @@ RUN ln -vs /usr/lib/google-cloud-sdk/bin/gsutil /usr/local/bin/gsutil
 COPY root/bin /root/bin
 COPY root/etc /root/etc
 
-ENV TF_VERSION=1.13.3
 RUN /root/bin/terraform-install.sh
 
 COPY gcloud/user-login.sh /usr/local/bin/user-login.sh
