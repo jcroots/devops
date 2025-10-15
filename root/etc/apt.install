@@ -8,3 +8,4 @@ wget
 unzip
 make
 shellcheck
+gnupg
