@@ -7,3 +7,4 @@ less
 wget
 unzip
 make
+shellcheck
