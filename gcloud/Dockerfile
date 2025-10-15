@@ -23,6 +23,13 @@ RUN apt-get clean \
 		/var/cache/apt/archives/*.deb \
 		/var/cache/apt/*cache.bin
 
+RUN groupadd -g 1980 devops \
+	&& useradd -d /home/devops -m -c devops -g 1980 -u 1980 devops \
+	&& chmod -v 0750 /home/devops
+
+RUN printf 'umask %s\n' '027' >>/home/devops/.profile
+RUN printf "export PS1='%s '\n" '\u@\h:\W\$' >>/home/devops/.profile
+
 ENV TF_VERSION=1.13.3
 COPY scripts/terraform-install.sh /root/
 RUN /root/terraform-install.sh
