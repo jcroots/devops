@@ -40,7 +40,13 @@ RUN ln -vs /usr/lib/google-cloud-sdk/bin/gsutil /usr/local/bin/gsutil
 COPY gcloud/user-login.sh /usr/local/bin/user-login.sh
 RUN chmod -v 0755 /usr/local/bin/user-login.sh
 
+USER devops:devops
+WORKDIR /home/devops
+
+ENV USER=devops
+ENV HOME=/home/devops
+
 RUN gcloud version
 RUN terraform version
 
-ENTRYPOINT ["/usr/local/bin/user-login.sh"]
+ENTRYPOINT ["/bin/bash", "-i", "-l"]
