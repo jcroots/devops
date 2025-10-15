@@ -4,5 +4,5 @@ set -eu
 NAME=${1:?'container name?'}
 
 exec docker build --rm \
-	-t "ghcr.io/jcroots/devops/${NAME}" \
+	-t "jcroots/devops-${NAME}" \
     -f "./${NAME}/Dockerfile" .
