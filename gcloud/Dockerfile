@@ -9,8 +9,6 @@ WORKDIR /root
 ENV USER=root
 ENV HOME=/root
 
-COPY root/bin /root/bin
-
 ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get clean \
@@ -20,7 +18,8 @@ RUN apt-get clean \
 		/var/cache/apt/archives/*.deb \
 		/var/cache/apt/*cache.bin
 
-COPY root/etc /root/etc
+COPY root/bin/apt-install.sh /root/bin/apt-install.sh
+COPY root/etc/apt.install /root/etc/apt.install
 
 RUN cat /root/etc/apt.install | xargs /root/bin/apt-install.sh
 
@@ -33,6 +32,9 @@ RUN printf "export PS1='%s '\n" '\u@\h:\W\$' >>/home/devops/.profile
 
 RUN ln -vs /usr/lib/google-cloud-sdk/bin/gcloud /usr/local/bin/gcloud
 RUN ln -vs /usr/lib/google-cloud-sdk/bin/gsutil /usr/local/bin/gsutil
+
+COPY root/bin /root/bin
+COPY root/etc /root/etc
 
 ENV TF_VERSION=1.13.3
 RUN /root/bin/terraform-install.sh
