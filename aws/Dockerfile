@@ -30,8 +30,7 @@ RUN groupadd -g 1980 devops \
 	&& useradd -d /home/devops -m -c devops -g 1980 -u 1980 devops \
 	&& chmod -v 0750 /home/devops
 
-RUN printf 'umask %s\n' '027' >>/home/devops/.profile
-RUN printf "export PS1='%s '\n" '\u@\h:\W\$' >>/home/devops/.profile
+RUN printf 'umask %s\n' '0027' >>/home/devops/.profile
 
 COPY root/bin /root/bin
 COPY root/etc /root/etc
