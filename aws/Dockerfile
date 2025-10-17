@@ -32,9 +32,7 @@ RUN groupadd -g 1980 devops \
 
 RUN printf 'umask %s\n' '0027' >>/home/devops/.profile
 
-COPY root/bin /root/bin
-COPY root/etc /root/etc
-
+COPY root/bin/terraform-install.sh /root/bin/terraform-install.sh
 RUN /root/bin/terraform-install.sh
 
 COPY aws/user-login.sh /usr/local/bin/user-login.sh
