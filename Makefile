@@ -14,3 +14,4 @@ gcloud:
 .PHONY: check
 check:
 	@shellcheck *.sh */*.sh */*/*.sh
+	@shellcheck -s bash usr/local/etc/devops.bashrc

@@ -30,7 +30,9 @@ RUN groupadd -g 1980 devops \
 	&& useradd -d /home/devops -m -c devops -g 1980 -u 1980 devops \
 	&& chmod -v 0750 /home/devops
 
-RUN printf 'umask %s\n' '0027' >>/home/devops/.profile
+COPY usr/local/etc/devops.bashrc /usr/local/etc/devops.bashrc
+RUN chmod -v 0644 /usr/local/etc/devops.bashrc
+RUN echo 'source /usr/local/etc/devops.bashrc' >>/home/devops/.profile
 
 COPY root/bin/terraform-install.sh /root/bin/terraform-install.sh
 RUN /root/bin/terraform-install.sh
