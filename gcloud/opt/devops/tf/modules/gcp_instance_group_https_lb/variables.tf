@@ -3,6 +3,12 @@ variable "project_id" {
   type        = string
 }
 
+variable "domain_names" {
+  description = "List of domain names for Google-managed certificate"
+  type        = list(string)
+  #example     = ["example.com", "www.example.com"]
+}
+
 variable "region" {
   description = "GCP Region"
   type        = string
@@ -31,10 +37,4 @@ variable "instance_type" {
   description = "Machine type for instances"
   type        = string
   default     = "e2-medium"
-}
-
-variable "domain_names" {
-  description = "List of domain names for Google-managed certificate"
-  type        = list(string)
-  example     = ["example.com", "www.example.com"]
 }
