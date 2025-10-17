@@ -15,3 +15,7 @@ gcloud:
 check:
 	@shellcheck *.sh */*.sh */*/*.sh
 	@shellcheck -s bash usr/local/etc/devops.bashrc
+
+.PHONY: prune
+prune:
+	docker system prune -f
