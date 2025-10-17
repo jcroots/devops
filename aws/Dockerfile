@@ -23,6 +23,9 @@ COPY root/bin/apt-install.sh /root/bin/apt-install.sh
 COPY root/etc/apt.install /root/etc/apt.install
 RUN cat /root/etc/apt.install | xargs /root/bin/apt-install.sh
 
+COPY root/bin/terraform-install.sh /root/bin/terraform-install.sh
+RUN /root/bin/terraform-install.sh
+
 COPY root/etc/aws/apt.install /root/etc/aws/apt.install
 RUN cat /root/etc/aws/apt.install | xargs /root/bin/apt-install.sh
 
@@ -33,9 +36,6 @@ RUN groupadd -g 1980 devops \
 COPY usr/local/etc/devops.bashrc /usr/local/etc/devops.bashrc
 RUN chmod -v 0644 /usr/local/etc/devops.bashrc
 RUN echo 'source /usr/local/etc/devops.bashrc' >>/home/devops/.profile
-
-COPY root/bin/terraform-install.sh /root/bin/terraform-install.sh
-RUN /root/bin/terraform-install.sh
 
 COPY aws/user-login.sh /usr/local/bin/user-login.sh
 RUN chmod -v 0755 /usr/local/bin/user-login.sh
