@@ -1,3 +1,4 @@
 *.md
 
+build.sh
 devel.sh
