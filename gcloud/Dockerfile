@@ -40,6 +40,8 @@ RUN ln -vs /usr/lib/google-cloud-sdk/bin/gsutil /usr/local/bin/gsutil
 COPY gcloud/user-login.sh /usr/local/bin/user-login.sh
 RUN chmod -v 0755 /usr/local/bin/user-login.sh
 
+COPY opt/devops /opt/devops
+
 USER devops:devops
 WORKDIR /home/devops
 

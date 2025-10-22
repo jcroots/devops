@@ -40,6 +40,8 @@ RUN echo 'source /usr/local/etc/devops.bashrc' >>/home/devops/.profile
 COPY aws/user-login.sh /usr/local/bin/user-login.sh
 RUN chmod -v 0755 /usr/local/bin/user-login.sh
 
+COPY opt/devops /opt/devops
+
 USER devops:devops
 WORKDIR /home/devops
 
