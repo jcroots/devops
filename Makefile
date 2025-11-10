@@ -13,7 +13,7 @@ gcloud:
 
 .PHONY: check
 check:
-	@shellcheck *.sh */*.sh */*/*.sh
+	@find . -path ./.git -prune -o -type f -name '*.sh' -print | xargs shellcheck
 	@shellcheck -s bash usr/local/etc/devops.bashrc
 
 .PHONY: prune
