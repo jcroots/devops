@@ -9,3 +9,4 @@ unzip
 make
 shellcheck
 gnupg
+postgresql-client
