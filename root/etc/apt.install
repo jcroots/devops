@@ -10,3 +10,5 @@ make
 shellcheck
 gnupg
 postgresql-client
+jq
+curl
