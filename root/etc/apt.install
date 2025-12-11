@@ -12,3 +12,4 @@ gnupg
 postgresql-client
 jq
 curl
+openssh-client
