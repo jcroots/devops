@@ -1,3 +1,5 @@
+# https://docs.cloud.google.com/sdk/docs/downloads-docker
+
 FROM gcr.io/google.com/cloudsdktool/google-cloud-cli:stable
 
 LABEL maintainer="Jeremías Casteglione <jeremias.rootstrap@gmail.com>"
@@ -22,6 +24,9 @@ COPY root/bin/apt-install.sh /root/bin/apt-install.sh
 
 COPY root/etc/apt.install /root/etc/apt.install
 RUN cat /root/etc/apt.install | xargs /root/bin/apt-install.sh
+
+COPY root/bin/gcloud-sql-proxy-install.sh /root/bin/gcloud-sql-proxy-install.sh
+RUN /root/bin/gcloud-sql-proxy-install.sh
 
 COPY root/bin/terraform-install.sh /root/bin/terraform-install.sh
 RUN /root/bin/terraform-install.sh
