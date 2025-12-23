@@ -29,6 +29,9 @@ RUN /root/bin/terraform-install.sh
 COPY root/etc/aws/apt.install /root/etc/aws/apt.install
 RUN cat /root/etc/aws/apt.install | xargs /root/bin/apt-install.sh
 
+COPY root/bin/aws-ssm-install.sh /root/bin/aws-ssm-install.sh
+RUN /root/bin/aws-ssm-install.sh
+
 RUN groupadd -g 1980 devops \
 	&& useradd -d /home/devops -m -c devops -g 1980 -u 1980 devops \
 	&& chmod -v 0750 /home/devops
