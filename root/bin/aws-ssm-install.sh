@@ -8,6 +8,10 @@ cd /root
 tmpdir=$(mktemp -d /tmp/devops-install-aws-ssm.XXXXXXX)
 cd "${tmpdir}"
 
+if test 'amd64' = "${ARCH}"; then
+	ARCH='64bit'
+fi
+
 wget -O ssm.deb "https://s3.amazonaws.com/session-manager-downloads/plugin/latest/ubuntu_${ARCH}/session-manager-plugin.deb"
 
 dpkg -i ssm.deb
