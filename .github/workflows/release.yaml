@@ -3,7 +3,7 @@ name: release
 on:
   push:
     tags:
-      - 'release/*'
+      - 'v*'
 
 concurrency:
   group: "release"
@@ -22,7 +22,7 @@ jobs:
 
     strategy:
       matrix:
-        version: [aws, gcloud]
+        tool: [aws, gcloud]
 
     steps:
       - uses: actions/checkout@v4
@@ -44,13 +44,13 @@ jobs:
 
       - name: Extract release tag name
         id: tag
-        run: echo "TAG=${GITHUB_REF_NAME#release/}" >> $GITHUB_ENV
+        run: echo "TAG=${GITHUB_REF_NAME}" >> $GITHUB_ENV
 
-      - name: Build and push ${{ matrix.version }}
+      - name: Build and push ${{ matrix.tool }}
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: ./${{ matrix.version }}/Dockerfile
+          file: ./${{ matrix.tool }}/Dockerfile
           push: true
           platforms: linux/amd64,linux/arm64
-          tags: ghcr.io/${{ github.repository }}/${{ matrix.version }}-${{ env.TAG }}
+          tags: ghcr.io/${{ github.repository }}/${{ matrix.tool }}-${{ env.TAG }}
