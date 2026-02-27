@@ -1,7 +1,7 @@
-FROM debian:forky-20251117-slim
+FROM debian:forky-20260223-slim
 
 LABEL maintainer="Jeremías Casteglione <jeremias.rootstrap@gmail.com>"
-LABEL version="251126"
+LABEL version="260227"
 
 USER root:root
 WORKDIR /root

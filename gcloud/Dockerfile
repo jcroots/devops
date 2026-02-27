@@ -3,7 +3,7 @@
 FROM gcr.io/google.com/cloudsdktool/google-cloud-cli:stable
 
 LABEL maintainer="Jeremías Casteglione <jeremias.rootstrap@gmail.com>"
-LABEL version="251126"
+LABEL version="260227"
 
 USER root:root
 WORKDIR /root
