@@ -1,7 +1,7 @@
 #!/bin/bash
 set -eux
 
-CSP_VERSION='2.20.0'
+CSP_VERSION='2.21.2'
 
 ARCH=$(dpkg --print-architecture)
 

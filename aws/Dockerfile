@@ -1,4 +1,4 @@
-FROM debian:forky-20260223-slim
+FROM debian:forky-20260316-slim
 
 LABEL maintainer="Jeremías Casteglione <jeremias.rootstrap@gmail.com>"
 LABEL version="260227"
