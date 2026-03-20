@@ -6,7 +6,6 @@ Targets:
   - Terraform            -> root/bin/terraform-install.sh
   - Cloud SQL Proxy      -> root/bin/gcloud-sql-proxy-install.sh
   - Debian forky slim    -> aws/Dockerfile
-  - TF Google provider   -> opt/devops/tf/providers.tf
 
 Usage:
   python3 upgrade.py            # check and update
@@ -25,7 +24,6 @@ WORKSPACE = Path(__file__).parent
 TERRAFORM_SCRIPT = WORKSPACE / "root/bin/terraform-install.sh"
 CSP_SCRIPT       = WORKSPACE / "root/bin/gcloud-sql-proxy-install.sh"
 AWS_DOCKERFILE   = WORKSPACE / "aws/Dockerfile"
-TF_PROVIDERS     = WORKSPACE / "opt/devops/tf/providers.tf"
 
 
 # ---------------------------------------------------------------------------
@@ -81,14 +79,6 @@ def get_latest_debian_forky_slim():
         raise RuntimeError("No forky-YYYYMMDD-slim tags found on Docker Hub")
     candidates.sort(key=lambda x: x[0], reverse=True)
     return candidates[0][1]  # e.g. "forky-20260223-slim"
-
-
-def get_latest_tf_google_provider():
-    """Return (latest_major, latest_full_version) for hashicorp/google provider."""
-    data = fetch_json("https://registry.terraform.io/v1/providers/hashicorp/google")
-    version = data["version"]  # e.g. "6.1.0"
-    major = version.split(".")[0]
-    return major, version
 
 
 # ---------------------------------------------------------------------------
@@ -173,29 +163,6 @@ def run_debian_forky(dry_run):
     )
 
 
-def run_tf_google_provider(dry_run):
-    print("[terraform google provider]")
-    current_major = read_current(TF_PROVIDERS, r'version\s*=\s*"~>\s*(\d+)\.0"')
-    latest_major, latest_full = get_latest_tf_google_provider()
-    current_display = f"~> {current_major}.0"
-    latest_display  = f"~> {latest_major}.0"
-    if current_major == latest_major:
-        print(f"  ok        {current_display}  (latest patch: {latest_full})")
-        return False
-    print(f"  outdated  {current_display} -> {latest_display}  (latest patch: {latest_full})")
-    changed = update_file(
-        TF_PROVIDERS,
-        r'version\s*=\s*"~>\s*\d+\.0"',
-        f'version = "~> {latest_major}.0"',
-        dry_run,
-    )
-    if changed and not dry_run:
-        print(f"  updated   {TF_PROVIDERS.relative_to(WORKSPACE)}")
-    elif changed and dry_run:
-        print(f"  would update {TF_PROVIDERS.relative_to(WORKSPACE)}")
-    return changed
-
-
 # ---------------------------------------------------------------------------
 # Main
 # ---------------------------------------------------------------------------
@@ -204,7 +171,6 @@ CHECKS = [
     run_terraform,
     run_cloud_sql_proxy,
     run_debian_forky,
-    run_tf_google_provider,
 ]
 
 
