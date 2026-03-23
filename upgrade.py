@@ -14,6 +14,7 @@ Usage:
 
 import json
 import re
+import subprocess
 import sys
 import urllib.error
 import urllib.request
@@ -21,9 +22,10 @@ from pathlib import Path
 
 WORKSPACE = Path(__file__).parent
 
-TERRAFORM_SCRIPT = WORKSPACE / "root/bin/terraform-install.sh"
-CSP_SCRIPT       = WORKSPACE / "root/bin/gcloud-sql-proxy-install.sh"
-AWS_DOCKERFILE   = WORKSPACE / "aws/Dockerfile"
+TERRAFORM_SCRIPT  = WORKSPACE / "root/bin/terraform-install.sh"
+CSP_SCRIPT        = WORKSPACE / "root/bin/gcloud-sql-proxy-install.sh"
+AWS_DOCKERFILE    = WORKSPACE / "aws/Dockerfile"
+GCLOUD_DOCKERFILE = WORKSPACE / "gcloud/Dockerfile"
 
 
 # ---------------------------------------------------------------------------
@@ -60,6 +62,15 @@ def get_latest_cloud_sql_proxy():
     )
     tag = data["tag_name"]  # e.g. "v2.15.0"
     return tag.lstrip("v")
+
+
+def get_installed_gcloud():
+    """Return the gcloud version from the locally installed SDK."""
+    result = subprocess.run(
+        ["bash", "-c", "gcloud --version | head -n1 | awk '{ print $4 }'"],
+        capture_output=True, text=True, check=True,
+    )
+    return result.stdout.strip()
 
 
 def get_latest_debian_forky_slim():
@@ -150,6 +161,19 @@ def run_cloud_sql_proxy(dry_run):
     )
 
 
+def run_gcloud(dry_run):
+    print("[gcloud]")
+    current = read_current(GCLOUD_DOCKERFILE, r"google-cloud-cli:([^-]+)-stable")
+    latest  = get_installed_gcloud()
+    return check(
+        "gcloud", current, latest,
+        GCLOUD_DOCKERFILE,
+        r"google-cloud-cli:[^-]+-stable",
+        f"google-cloud-cli:{latest}-stable",
+        dry_run,
+    )
+
+
 def run_debian_forky(dry_run):
     print("[debian forky slim]")
     current = read_current(AWS_DOCKERFILE, r"FROM debian:(\S+)")
@@ -171,6 +195,7 @@ CHECKS = [
     run_terraform,
     run_cloud_sql_proxy,
     run_debian_forky,
+    run_gcloud,
 ]
 
 

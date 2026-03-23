@@ -1,11 +1,11 @@
 # https://docs.cloud.google.com/sdk/docs/downloads-docker
 
-FROM gcr.io/google.com/cloudsdktool/google-cloud-cli:stable
+FROM gcr.io/google.com/cloudsdktool/google-cloud-cli:561.0.0-stable
 
 LABEL maintainer="Jeremías Casteglione <jeremias.rootstrap@gmail.com>"
-LABEL version="260320"
+LABEL version="260323"
 
-ENV JCROOTS_VERSION=260320.1
+ENV JCROOTS_VERSION=260323
 
 USER root:root
 WORKDIR /root
