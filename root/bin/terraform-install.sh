@@ -1,7 +1,7 @@
 #!/bin/bash
 set -eux
 
-TF_VERSION='1.14.7'
+TF_VERSION='1.14.8'
 
 ARCH=$(dpkg --print-architecture)
 

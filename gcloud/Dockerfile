@@ -1,6 +1,6 @@
 # https://docs.cloud.google.com/sdk/docs/downloads-docker
 
-FROM gcr.io/google.com/cloudsdktool/google-cloud-cli:561.0.0-stable
+FROM gcr.io/google.com/cloudsdktool/google-cloud-cli:563.0.0-stable
 
 LABEL maintainer="Jeremías Casteglione <jeremias.rootstrap@gmail.com>"
 LABEL version="260323"
