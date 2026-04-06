@@ -3,9 +3,9 @@
 FROM gcr.io/google.com/cloudsdktool/google-cloud-cli:563.0.0-stable
 
 LABEL maintainer="Jeremías Casteglione <jeremias.rootstrap@gmail.com>"
-LABEL version="260323"
+LABEL version="260406"
 
-ENV JCROOTS_VERSION=260323
+ENV JCROOTS_VERSION=260406
 
 USER root:root
 WORKDIR /root
@@ -33,6 +33,9 @@ RUN /root/bin/gcloud-sql-proxy-install.sh
 COPY root/bin/terraform-install.sh /root/bin/terraform-install.sh
 RUN /root/bin/terraform-install.sh
 
+COPY root/bin/claude-install.sh /root/bin/claude-install.sh
+RUN /root/bin/claude-install.sh
+
 RUN groupadd -g 1980 devops \
 	&& useradd -d /home/devops -m -c devops -g 1980 -u 1980 devops \
 	&& chmod -v 0750 /home/devops
@@ -55,5 +58,6 @@ ENV HOME=/home/devops
 
 RUN gcloud version
 RUN terraform version
+RUN claude --version
 
 ENTRYPOINT ["/bin/bash", "-i", "-l"]

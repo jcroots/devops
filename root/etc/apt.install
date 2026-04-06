@@ -13,3 +13,4 @@ postgresql-client
 jq
 curl
 bc
+npm

@@ -1,9 +1,9 @@
 FROM debian:forky-20260316-slim
 
 LABEL maintainer="Jeremías Casteglione <jeremias.rootstrap@gmail.com>"
-LABEL version="260320"
+LABEL version="260406"
 
-ENV JCROOTS_VERSION=260320.1
+ENV JCROOTS_VERSION=260406
 
 USER root:root
 WORKDIR /root
@@ -34,6 +34,9 @@ RUN cat /root/etc/aws/apt.install | xargs /root/bin/apt-install.sh
 COPY root/bin/aws-ssm-install.sh /root/bin/aws-ssm-install.sh
 RUN /root/bin/aws-ssm-install.sh
 
+COPY root/bin/claude-install.sh /root/bin/claude-install.sh
+RUN /root/bin/claude-install.sh
+
 RUN groupadd -g 1980 devops \
 	&& useradd -d /home/devops -m -c devops -g 1980 -u 1980 devops \
 	&& chmod -v 0750 /home/devops
@@ -53,5 +56,6 @@ ENV HOME=/home/devops
 
 RUN aws --version
 RUN terraform version
+RUN claude --version
 
 ENTRYPOINT ["/bin/bash", "-i", "-l"]
