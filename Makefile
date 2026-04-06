@@ -19,3 +19,7 @@ check:
 .PHONY: prune
 prune:
 	docker system prune --force
+
+.PHONY: ci-check
+ci-check:
+	@$(MAKE) check

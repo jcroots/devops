@@ -1,0 +1,25 @@
+name: check
+
+on:
+  push:
+    branches:
+      - main
+      - next
+
+concurrency:
+  group: "check"
+  cancel-in-progress: false
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Make CI Check
+        run: make ci-check
