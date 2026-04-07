@@ -15,6 +15,7 @@ gcloud:
 check:
 	@find . -type f -name '*.sh' -print | xargs shellcheck
 	@shellcheck -s bash usr/local/etc/devops.bashrc
+	@python3 -m py_compile upgrade.py && rm -rf __pycache__
 
 .PHONY: prune
 prune:
