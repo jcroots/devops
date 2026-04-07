@@ -29,12 +29,13 @@ All shell scripts are linted with `shellcheck`. Run `make check` before committi
 - **`root/bin/`** — Individual install scripts for each tool (terraform, claude-code, aws-ssm, gcloud-sql-proxy, apt packages). These are copied into the build context and executed during `docker build`.
 - **`root/etc/`** — APT package lists. `devops.list` is shared; `devops-aws.list` adds AWS-specific packages.
 - **`usr/local/etc/devops.bashrc`** — Shared shell configuration sourced via `/home/devops/.profile`.
-- **`upgrade.py`** — Checks for newer versions of Terraform, Cloud SQL Proxy, Debian base image, and GCloud SDK via their respective APIs. Supports `--dry-run`.
+- **`upgrade.py`** — Checks for newer versions of Terraform, Cloud SQL Proxy, Claude Code (npm), Debian base image, and GCloud SDK via their respective APIs. When a Dockerfile is modified, it also bumps `JCROOTS_VERSION` and `LABEL version` to today's YYMMDD. Supports `--dry-run`.
 
 ## Versioning
 
-- `JCROOTS_VERSION` in Dockerfiles uses YYMMDD format (e.g., `260406` = 2026-04-06).
-- Tool versions are hardcoded in install scripts and Dockerfiles. Use `upgrade.py` to check for updates.
+- `JCROOTS_VERSION` in Dockerfiles uses YYMMDD format (e.g., `260406` = 2026-04-06). Auto-bumped by `upgrade.py` when a Dockerfile changes.
+- `JCROOTS_CLAUDE_UPGRADE` in Dockerfiles holds the Claude Code npm version. Changing it busts the Docker layer cache and triggers a reinstall.
+- Other tool versions are hardcoded in install scripts and Dockerfiles. Use `upgrade.py` to check for updates.
 
 ## Release Process
 

@@ -5,6 +5,7 @@ upgrade.py - Check and update hardcoded software versions in installation script
 Targets:
   - Terraform            -> root/bin/terraform-install.sh
   - Cloud SQL Proxy      -> root/bin/gcloud-sql-proxy-install.sh
+  - Claude Code          -> aws/Dockerfile, gcloud/Dockerfile
   - Debian forky slim    -> aws/Dockerfile
 
 Usage:
@@ -73,6 +74,12 @@ def get_latest_cloud_sql_proxy():
     )
     tag = data["tag_name"]  # e.g. "v2.15.0"
     return tag.lstrip("v")
+
+
+def get_latest_claude():
+    """Return the latest version of @anthropic-ai/claude-code from npm."""
+    data = fetch_json("https://registry.npmjs.org/@anthropic-ai/claude-code/latest")
+    return data["version"]
 
 
 def get_installed_gcloud():
@@ -200,6 +207,27 @@ def run_gcloud(dry_run):
     )
 
 
+def run_claude(dry_run):
+    print("[claude]")
+    current = read_current(AWS_DOCKERFILE, r"ENV JCROOTS_CLAUDE_UPGRADE=(\S+)")
+    latest  = get_latest_claude()
+    if current == latest:
+        print(f"  ok        {current}")
+        return False
+    print(f"  outdated  {current} -> {latest}")
+    pattern = r"ENV JCROOTS_CLAUDE_UPGRADE=\S+"
+    replacement = f"ENV JCROOTS_CLAUDE_UPGRADE={latest}"
+    changed = False
+    for df in [AWS_DOCKERFILE, GCLOUD_DOCKERFILE]:
+        updated = update_file(df, pattern, replacement, dry_run)
+        if updated and not dry_run:
+            print(f"  updated   {df.relative_to(WORKSPACE)}")
+        elif updated and dry_run:
+            print(f"  would update {df.relative_to(WORKSPACE)}")
+        changed = changed or updated
+    return changed
+
+
 def run_debian_forky(dry_run):
     print("[debian forky slim]")
     current = read_current(AWS_DOCKERFILE, r"FROM debian:(\S+)")
@@ -220,15 +248,17 @@ def run_debian_forky(dry_run):
 CHECKS = [
     run_terraform,
     run_cloud_sql_proxy,
+    run_claude,
     run_debian_forky,
     run_gcloud,
 ]
 
 CHECK_TARGETS.update({
-    run_terraform:       TERRAFORM_SCRIPT,
-    run_cloud_sql_proxy: CSP_SCRIPT,
-    run_debian_forky:    AWS_DOCKERFILE,
-    run_gcloud:          GCLOUD_DOCKERFILE,
+    run_terraform:       {TERRAFORM_SCRIPT},
+    run_cloud_sql_proxy: {CSP_SCRIPT},
+    run_claude:          {AWS_DOCKERFILE, GCLOUD_DOCKERFILE},
+    run_debian_forky:    {AWS_DOCKERFILE},
+    run_gcloud:          {GCLOUD_DOCKERFILE},
 })
 
 
@@ -246,9 +276,8 @@ def main():
             updated = fn(dry_run)
             any_updated = any_updated or updated
             if updated:
-                target = CHECK_TARGETS[fn]
-                if target in DOCKERFILES:
-                    modified_dockerfiles.add(target)
+                targets = CHECK_TARGETS[fn]
+                modified_dockerfiles.update(targets & DOCKERFILES)
         except Exception as e:
             print(f"  ERROR: {e}")
             any_error = True

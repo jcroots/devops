@@ -33,6 +33,7 @@ RUN /root/bin/gcloud-sql-proxy-install.sh
 COPY root/bin/terraform-install.sh /root/bin/terraform-install.sh
 RUN /root/bin/terraform-install.sh
 
+ENV JCROOTS_CLAUDE_UPGRADE=2.1.92
 COPY root/bin/claude-install.sh /root/bin/claude-install.sh
 RUN /root/bin/claude-install.sh
 

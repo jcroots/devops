@@ -34,6 +34,7 @@ RUN cat /root/etc/aws/apt.install | xargs /root/bin/apt-install.sh
 COPY root/bin/aws-ssm-install.sh /root/bin/aws-ssm-install.sh
 RUN /root/bin/aws-ssm-install.sh
 
+ENV JCROOTS_CLAUDE_UPGRADE=2.1.92
 COPY root/bin/claude-install.sh /root/bin/claude-install.sh
 RUN /root/bin/claude-install.sh
 
