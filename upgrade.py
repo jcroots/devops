@@ -18,6 +18,7 @@ import subprocess
 import sys
 import urllib.error
 import urllib.request
+from datetime import date
 from pathlib import Path
 
 WORKSPACE = Path(__file__).parent
@@ -26,6 +27,16 @@ TERRAFORM_SCRIPT  = WORKSPACE / "root/bin/terraform-install.sh"
 CSP_SCRIPT        = WORKSPACE / "root/bin/gcloud-sql-proxy-install.sh"
 AWS_DOCKERFILE    = WORKSPACE / "aws/Dockerfile"
 GCLOUD_DOCKERFILE = WORKSPACE / "gcloud/Dockerfile"
+
+DOCKERFILES = {AWS_DOCKERFILE, GCLOUD_DOCKERFILE}
+
+# Map each check function's target file (populated after function definitions)
+CHECK_TARGETS = {}
+
+
+def today_version():
+    """Return today's date as YYMMDD."""
+    return date.today().strftime("%y%m%d")
 
 
 # ---------------------------------------------------------------------------
@@ -118,6 +129,21 @@ def update_file(path, pattern, replacement, dry_run=False):
     return True
 
 
+def update_dockerfile_version(path, version, dry_run):
+    """Update JCROOTS_VERSION and LABEL version in a Dockerfile."""
+    changed = False
+    changed |= update_file(path, r'LABEL version="[^"]+"', f'LABEL version="{version}"', dry_run)
+    changed |= update_file(path, r'ENV JCROOTS_VERSION=\S+', f'ENV JCROOTS_VERSION={version}', dry_run)
+    rel = path.relative_to(WORKSPACE)
+    if changed and not dry_run:
+        print(f"  updated   {rel}")
+    elif changed and dry_run:
+        print(f"  would update {rel}")
+    else:
+        print(f"  ok        {rel} (already {version})")
+    return changed
+
+
 # ---------------------------------------------------------------------------
 # Per-tool check + update logic
 # ---------------------------------------------------------------------------
@@ -198,6 +224,13 @@ CHECKS = [
     run_gcloud,
 ]
 
+CHECK_TARGETS.update({
+    run_terraform:       TERRAFORM_SCRIPT,
+    run_cloud_sql_proxy: CSP_SCRIPT,
+    run_debian_forky:    AWS_DOCKERFILE,
+    run_gcloud:          GCLOUD_DOCKERFILE,
+})
+
 
 def main():
     dry_run = "--dry-run" in sys.argv
@@ -206,14 +239,31 @@ def main():
 
     any_updated = False
     any_error   = False
+    modified_dockerfiles = set()
 
     for fn in CHECKS:
         try:
             updated = fn(dry_run)
             any_updated = any_updated or updated
+            if updated:
+                target = CHECK_TARGETS[fn]
+                if target in DOCKERFILES:
+                    modified_dockerfiles.add(target)
         except Exception as e:
             print(f"  ERROR: {e}")
             any_error = True
+        print()
+
+    if modified_dockerfiles:
+        version = today_version()
+        print("[version]")
+        for df in sorted(modified_dockerfiles, key=str):
+            try:
+                changed = update_dockerfile_version(df, version, dry_run)
+                any_updated = any_updated or changed
+            except Exception as e:
+                print(f"  ERROR: {e}")
+                any_error = True
         print()
 
     if any_error:
