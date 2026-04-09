@@ -1,11 +1,11 @@
 # https://docs.cloud.google.com/sdk/docs/downloads-docker
 
-FROM gcr.io/google.com/cloudsdktool/google-cloud-cli:563.0.0-stable
+FROM gcr.io/google.com/cloudsdktool/google-cloud-cli:564.0.0-stable
 
 LABEL maintainer="Jeremías Casteglione <jeremias.rootstrap@gmail.com>"
-LABEL version="260406"
+LABEL version="260409"
 
-ENV JCROOTS_VERSION=260406
+ENV JCROOTS_VERSION=260409
 
 USER root:root
 WORKDIR /root
@@ -33,7 +33,7 @@ RUN /root/bin/gcloud-sql-proxy-install.sh
 COPY root/bin/terraform-install.sh /root/bin/terraform-install.sh
 RUN /root/bin/terraform-install.sh
 
-ENV JCROOTS_CLAUDE_UPGRADE=2.1.92
+ENV JCROOTS_CLAUDE_UPGRADE=2.1.97
 COPY root/bin/claude-install.sh /root/bin/claude-install.sh
 RUN /root/bin/claude-install.sh
 
